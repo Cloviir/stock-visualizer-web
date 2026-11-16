@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Data Visualizer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main>
+    <h1>Stock Data Visualizer</h1>
+
+    {% if errors %}
+    <div class="errors">
+      <ul>
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="/">
+      <label for="symbol">Choose Symbol</label>
+      <select name="symbol" id="symbol" required>
+        <option value="">-- Select a symbol --</option>
+        {% for s in symbols %}
+        <option value="{{ s }}" {% if values.symbol == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="chart_type">Choose Chart Type</label>
+      <select name="chart_type" id="chart_type" required>
+        <option value="">-- Select a chart type --</option>
+        {% for k, v in chart_types.items() %}
+        <option value="{{ k }}" {% if values.chart_type == k %}selected{% endif %}>{{ k }}. {{ v }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="time_series">Choose Time Series</label>
+      <select name="time_series" id="time_series" required>
+        <option value="">-- Select a time series --</option>
+        {% for k, v in time_series.items() %}
+        <option value="{{ k }}" {% if values.time_series == k %}selected{% endif %}>{{ k }}. {{ v }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="start_date">Start Date</label>
+      <input type="date" name="start_date" id="start_date" value="{{ values.start_date or '' }}" required>
+
+      <label for="end_date">End Date</label>
+      <input type="date" name="end_date" id="end_date" value="{{ values.end_date or '' }}" required>
+
+      <button type="submit">Generate Chart</button>
+    </form>
+
+    {% if chart %}
+    <section class="chart">
+      <embed type="image/svg+xml" src="{{ chart }}">
+    </section>
+    {% endif %}
+  </main>
+</body>
+</html>
